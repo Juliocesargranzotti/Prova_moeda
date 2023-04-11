@@ -8,93 +8,83 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 </head>
 
-<body>
-    <div class="container">
-		<h1>Conversor de Moeda</h1>
-		<form>
-			
-			<div class="form-group">
-				<label for="Real">Real :</label>
-				<input type="text" class="form-control" id="real" placeholder="Digite o valor">
-			</div>
-
-			<div class="form-group">
-				<label for="Dolar">Dolar :</label>
-				<input type="text" class="form-control" id="Dolar" placeholder="Digite o valor">
-			</div>
-			<div class="form-group">
-				<label for="Euro">Euro :</label>
-				<input type="text" class="form-control" id="Euro" placeholder="Digite o valor">
-			</div>
-            <div class="form-group">
-				<label for="Libra">Libra :</label>
-				<input type="text" class="form-control" id="Libra" placeholder="Digite o valor">
-			</div>
-            
-            <button type="text" class="btn btn-primary" onclick="converter()">Converter</button>
-			
-		</form>
-		<div class="resultado"></div>
-	</div>
-
-
+<body>	
+	<form>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    </head>
     
-    </ul>
-</div>
-<form>
-    <script>
+    <body>
+        <div class="container">
+            <h1>Conversor de Moeda</h1>
+            <form>
+                <div id="div2">
+                    <b><label id="text1">Converter para: </label></b><br />
+                    <select id="opções">
+                        <option></option>
+                        <option>Dólar Americano</option>
+                        <option>Euro</option>
+                        <option>Libra Esterlina</option>
+                        
+                    </select><br />
+                </div>
+                <div class="form-group">
+                    <label for="Real">Real :</label>
+                    <input type="text" class="form-control" id="Real" placeholder="Digite o valor">
+                </div>
+    
+                <div class="form-group">
+                    <label for="Dolar">Dolar :</label>
+                    <input type="text" class="form-control" id="Dolar" placeholder="Digite o valor">
+                </div>
+                <div class="form-group">
+                    <label for="Euro">Euro :</label>
+                    <input type="text" class="form-control" id="Euro" placeholder="Digite o valor">
+                </div>
+                <div class="form-group">
+                    <label for="Libra">Libra :</label>
+                    <input type="text" class="form-control" id="Libra" placeholder="Digite o valor">
+                </div>
+                
+                <button type="text" class="btn btn-primary" onclick="converter()">Converter</button>
+                
+            </form>
+            <div class="resultado"></div>
+        </div>
         
+		<script>
+		const tabela_coef = {
+            real: 1.00,
+            dolar: 5.00,
+            euro: 5.46
+            libra: 6.21
+          }
+          
+          const tabela_loc = {
+            real: "BRL",
+            dolar: "USD",
+            euro: "EUR"
+          }
+          
+          const money_cov = {
+            get in() {
+              return document.getElementById('moeda_in').value;
+            },
+            get out() {
+              return document.getElementById('moeda_out').value;
+            },
+            mul() {
+              let entrada = parseFloat(document.getElementById('valor_entrada').value);
+              let converção = entrada * tabela_coef[this.in] / tabela_coef[this.out];
+              alert(converção.toLocaleString('pt-br', {
+                style: 'currency',
+                currency: tabela_loc[this.out]
+              }));
+            }
+          };
+            
+        </script>
+	
+	
 
-const label_from_currency = document.getElementById('from_currency');
-const input_from_ammount = document.getElementById('from_ammount');
-const label_to_currency = document.getElementById('to_currency');
-const input_to_ammount = document.getElementById('to_ammount');
-
-const tax_info = document.getElementById('tax_info');
-const swap = document.getElementById('swap');
-
-label_from_currency.addEventListener('change', calculate);
-input_from_ammount.addEventListener('input', calculate);
-label_to_currency.addEventListener('change', calculate);
-input_to_ammount.addEventListener('input', calculate);
-swap.addEventListener('click', infoSwap);
-
-main();
-
-function main() {
-  let currency = { "BRL": "Real", "EUR": "Euro", "USD": "Dollar" };
-  let options = [];
-  for (var [key, value] of Object.entries(currency)) {
-    options.push(`<option value='${key}'>${value}</option>`);
-  }
-  label_from_currency.innerHTML = options.join('\n');
-  label_to_currency.innerHTML = options.join('\n');
-  calculate();
-}
-
-function infoSwap() {
-  let temp = label_from_currency.value;
-  label_from_currency.value = label_to_currency.value;
-  label_to_currency.value = temp;
-  calculate();
-}
-
-async function getURL(url) {
-  return (await fetch(url)).json();
-}
-
-function getInfoSelect(select) {
-  return select.options[select.selectedIndex].text;
-}
-
-async function calculate() {
-  let from = label_from_currency.value;
-  let to = label_to_currency.value;
-  let { rates } = await getURL(`https://api.exchangerate-api.com/v4/latest/${from}`);
-  let rate = rates[to];
-  tax_info.innerText = `1 ${getInfoSelect(label_from_currency)} = ${rate} ${getInfoSelect(label_to_currency)}`
-  input_to_ammount.value = (input_from_ammount.value * rate).toFixed(2);
-}
-    </script>
 </body>
 </html>
